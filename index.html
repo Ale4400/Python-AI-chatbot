@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="icon" href="/favicon.ico"> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #87CEEB, #D3D3D3); /* Degradado diagonal de azul cielo a gris claro */
+        }
+        .container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 80vh; 
+        }
+        h1 { font-size: 3em; margin-bottom: 10px; }
+        h2 { margin-bottom: 20px; font-size: 1.2em; }
+       
+        .center-image {
+            display: block;         
+            margin: 20px auto;      
+            width: 280px;         
+            border-radius: 12px;    
+            box-shadow: 0 0 20px rgba(255,255,255,0.1); 
+        }
+        
+    .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #4c74af;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4c74af;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #455aa0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido</h1>
+        <img src="/static/chatbot.gif" alt="chatbot" class="center-image" width=250 height=250>
+        <h2>Hola, ¿En qué puedo ayudarte?</h2>
+        <div class="chat-area" id="chat-area">
+        </div>
+        <div class="input-area">
+            <input type="text" id="message-input" placeholder="Escribe tu mensaje aquí..." required>
+            <button id="send-button" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        const chatArea = document.getElementById('chat-area');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        let chatHistory = []; 
+
+        function addMessage(content, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = content;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }  
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;  
+
+            addMessage(message, 'user-message');
+            chatHistory.push({ role: 'user', content: message });
+
+            messageInput.value = '';
+            sendButton.disabled = true;
+            sendButton.textContent = 'Enviando...';
+
+            try {
+             
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                
+                    addMessage(data.response, 'bot-message');
+                    chatHistory.push({ role: 'assistant', content: data.response });
+                } else {
+                    addMessage('Error: ' + data.detail, 'bot-message');
+                }
+            } catch (error) {
+                addMessage('Error de conexión. Inténtalo de nuevo.', 'bot-message');
+            }
+
+            sendButton.disabled = false;
+            sendButton.textContent = 'Enviar';
+        }
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
