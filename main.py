@@ -14,7 +14,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY") #Aquí va la API Key de Open AI que usted generó como se indica en el Readme.md
 
 class ChatRequest(BaseModel):
     message: str
