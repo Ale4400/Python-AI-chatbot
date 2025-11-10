@@ -12,7 +12,7 @@
 
 -  **Python 3.7+** → [Descargar](https://www.python.org/downloads/)  
 - 🔑 **Cuenta de OpenAI** → [Regístrese aquí](https://platform.openai.com/)  
--  **Git** → [Instalar Git](https://git-scm.com/downloads) (Debe colocar su API Key dentro del código como señalé)
+-  **Git** → [Instalar Git](https://git-scm.com/downloads) (Debe colocar su API Key dentro del código 'main.py' como señalé)
 - 📁 Archivos estáticos: Se pueden reemplazar si desea (Los que se encuentran en la carpeta static)
   
 
