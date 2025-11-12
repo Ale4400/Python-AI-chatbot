@@ -32,3 +32,8 @@ Usa el input de texto y presiona "Enviar" o Enter.
 El bot responde en tiempo real usando OpenAI.
 API: Envía POST a /api/chat con JSON {"message": "Hola"} para respuestas programáticas.
 Salud: Visite /health para verificar el estado del servicio.
+
+```
+Al clonar, coloque esto en la terminal de su IDE para descargar dependencias: 
+```bash 
+pip install fastapi uvicorn openai jinja2 python-multipart
